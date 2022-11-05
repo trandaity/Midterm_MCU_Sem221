@@ -13,7 +13,15 @@
 #define NORMAL_STATE 1
 #define PRESSED_STATE 0
 
-int isButtonPressed();
-void getKeyInput();
+extern int ResetFlag;
+extern int IncFlag;
+extern int DecFlag;
+
+int isResetPressed();
+int isIncPressed();
+int isDecPressed();
+void getResetKeyInput();
+void getIncKeyInput();
+void getDecKeyInput();
 
 #endif /* INC_BUTTON_H_ */

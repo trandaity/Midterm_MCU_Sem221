@@ -21,6 +21,8 @@
 #include "main.h"
 #include "software_timer.h"
 #include "button.h"
+#include "fsm_buttons_run.h"
+
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -96,12 +98,46 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  int counter = 0;
+  setTimer1(100);
+  int status = NoButtonsPressed;
   while (1)
   {
-	  if(isButtonPressed())
+	  if(timer1_flag)
 	  {
+		  setTimer1(100);
 		  HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
 	  }
+
+	  if(isResetPressed())
+	  {
+		  HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
+		  status = ButtonRESET;
+		  fsm_buttons_run(status, counter);
+		  status = NoButtonsPressed;
+	  }
+	  else if(isIncPressed())
+	  {
+		  HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
+		  status = ButtonINC;
+		  fsm_buttons_run(status, counter);
+		  status = NoButtonsPressed;
+	  }
+	  else if(isDecPressed())
+	  {
+		  HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
+		  status = ButtonDEC;
+		  fsm_buttons_run(status, counter);
+		  status = NoButtonsPressed;
+	  }
+	  else
+	  {
+		  status = NoButtonsPressed;
+		  fsm_buttons_run(status, counter);
+	  }
+
+	  display7SEG(counter);
+	  //setTimer1(100);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -225,7 +261,10 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 	timerRun();
-	getKeyInput();
+	getResetKeyInput();
+	getIncKeyInput();
+	getResetKeyInput();
+	//getKeyInput();
 }
 /* USER CODE END 4 */
 
